@@ -6,14 +6,52 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/01 07:30:51 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 11:09:55 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "get_next_line.h"
 
-int		ft_next_stop(t_file *file)
+static t_file *lst_add(t_list **list, int fd)
+{
+	t_list *res;
+	t_file *data;
+
+	res = (t_list *)malloc(sizeof(t_list));
+	data = (t_file *)malloc(sizeof(t_file));
+	if (!res || !data)
+	{
+		free(res);
+		free(data);
+		return (NULL);
+	}
+	data->fd = fd;
+	data->state = 1;
+	data->start = -1;
+	data->end = -1;
+	data->pos = -1;
+	res->data = data;
+	res->next = *list;
+	*list = res;
+	return ((t_file *)res->data);
+}
+
+t_file *lst_get(t_list **list, int fd)
+{
+	t_list *lst;
+
+	lst = *list;
+	while (lst)
+	{
+		if (((t_file *)lst->data)->fd == fd)
+			return ((t_file *)lst->data);
+		lst = lst->next;
+	}
+	return (lst_add(list, fd));
+}
+
+void	ft_next_stop(t_file *file)
 {
 	size_t	i;
 	char	*cur;
@@ -25,11 +63,13 @@ int		ft_next_stop(t_file *file)
 	while (*cur && i < n)
 	{
 		if (*cur == '\n')
-			return (i);
+		{
+			file->pos = i;
+			return ;
+		}
 		cur++;
 		i++;
 	}
-	return (-1);
 }
 
 int		ft_strlen(const char *str)

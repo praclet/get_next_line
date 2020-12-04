@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/02 10:42:27 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 11:13:14 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,25 @@ static char	*gnl_concat(char *s1, char *s2, size_t len2)
 	int		len1;
 	char	*res;
 	char	*tmp;
+	char	*tmp_s1;
 
 	if (!s1 && !s2)
 		return (NULL);
 	len1 = ft_strlen(s1);
 	res = (char *)malloc((len1 + len2 + 1) * sizeof(char));
 	if (!res)
+	{
+		free(s1);
 		return (NULL);
+	}
 	tmp = res;
 	if (s1)
+	{
+		tmp_s1 = s1;
 		while (*s1)
 			*tmp++ = *s1++;
-	free(s1);
+		free(tmp_s1);
+	}
 	if (s2)
 		while (len2--)
 			*tmp++ = *s2++;
@@ -40,49 +47,27 @@ static char	*gnl_concat(char *s1, char *s2, size_t len2)
 
 static int	gnl_fill_buffer(t_file *file)
 {
-	int tmp;
-
 	if (file->state < 0)
 		return (-1);
-	if (file->start >= 0)
+	if (file->state == 0
+		|| (file->start >= 0 && file->start <= file->end))
 	{
-		file->pos = ft_next_stop(file);
+		ft_next_stop(file);
 		return (file->state);
 	}
-	tmp = read(file->fd, file->buffer, BUFFER_SIZE);
-	if (tmp <= 0)
+	file->state = read(file->fd, file->buffer, BUFFER_SIZE);
+	if (file->state < 0)
 	{
 		file->start = -1;
 		file->end = -1;
 		file->pos = -1;
-		file->state = tmp;
-		return (tmp);
+		return (file->state);
 	}
-	file->start = 0;
-	file->end = tmp - 1;
-	file->pos = ft_next_stop(file);
-	file->state = 1;
-	return (tmp ? 1 : 0);
-}
-
-static int	gnl_get_file_index(t_directory *dir, int fd)
-{
-	int	i;
-
-	i = 0;
-	while (i < dir->nb_file && dir->tab[i].fd != fd)
-		i++;
-	if (i >= dir->nb_file)
-	{
-		if (i > MAX_FILE)
-			return (-1);
-		dir->tab[i].fd = fd;
-		dir->tab[i].start = -1;
-		dir->tab[i].end = -1;
-		dir->tab[i].state = 1;
-		dir->nb_file++;
-	}
-	return (i);
+	file->start = file->state ? 0 : file->start;
+	file->end = file->state ? file->state : file->end;
+	file->state = file->state ? 1 : 0;
+	ft_next_stop(file);
+	return (file->state);
 }
 
 static int	gnl_update_file(t_file *file, int rc)
@@ -94,41 +79,41 @@ static int	gnl_update_file(t_file *file, int rc)
 	}
 	else
 	{
-		if (file->pos <= 0)
+		if (file->pos < 0)
 		{
 			file->start = -1;
 			file->end = -1;
 		}
 		else
-			file->start += file->pos;
+			file->start += file->pos + 1;
 	}
 	return (rc);
 }
 
 int			get_next_line(int fd, char **line)
 {
-	t_directory	dir;
-	t_file		*file;
-	int			tmp;
+	static t_list	*dir;
+	t_file			*file;
 
-	tmp = gnl_get_file_index(&dir, fd);
-	if (tmp < 0)
+	file = lst_get(&dir, fd);
+	if (!file)
 		return (-1);
-	file = &dir.tab[tmp];
 	if (gnl_fill_buffer(file) < 0)
 		return (gnl_update_file(file, -1));
 	*line = gnl_concat(NULL, file->buffer + file->start,
-		(file->pos < 0 ? file->end - file->start : file->pos) + 1);
+		(file->pos < 0 ? file->end - file->start + 1 : file->pos));
 	if (!*line)
 		return (gnl_update_file(file, -1));
+	(void)gnl_update_file(file, 1);
 	while (file->pos < 0 && file->state > 0)
 	{
 		if (gnl_fill_buffer(file) < 0)
 			return (gnl_update_file(file, -1));
 		*line = gnl_concat(*line, file->buffer + file->start,
-			(file->pos < 0 ? file->end - file->start : file->pos) + 1);
+			(file->pos < 0 ? file->end - file->start + 1 : file->pos));
 		if (!*line)
 			return (gnl_update_file(file, -1));
+		(void)gnl_update_file(file, 1);
 	}
-	return (gnl_update_file(file, file->pos < 0 && file->state == 0 ? 0 : 1));
+	return (file->pos < 0 && file->state == 0 ? 0 : 1);
 }
