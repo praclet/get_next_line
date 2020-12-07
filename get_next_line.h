@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 22:21:11 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/04 10:59:04 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 15:45:03 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@ int					get_next_line(int fd, char **line);
 void				ft_next_stop(t_file *file);
 int					ft_strlen(const char *str);
 t_file				*lst_get(t_list **list, int fd);
+char				*gnl_new_line(t_file *file, char *s1);
 
 #endif

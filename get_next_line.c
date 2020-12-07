@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 15:26:43 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 15:45:10 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,7 @@ int			get_next_line(int fd, char **line)
 		return (-1);
 	if ((tmp = gnl_fill_buffer(file)) < 0)
 		return (gnl_update_file(file, tmp));
-	*line = gnl_concat(NULL, file->buffer + file->start,
-		(file->pos < 0 ? file->end - file->start + 1 : file->pos));
+	*line = gnl_new_line(file, NULL);
 	if (!*line)
 		return (gnl_update_file(file, -1));
 	(void)gnl_update_file(file, 1);
@@ -111,8 +110,7 @@ int			get_next_line(int fd, char **line)
 		if ((tmp = gnl_fill_buffer(file)) < 0)
 			return (gnl_update_file(file, -1));
 		if (tmp)
-			*line = gnl_concat(*line, file->buffer + file->start,
-				(file->pos < 0 ? file->end - file->start + 1 : file->pos));
+			*line = gnl_new_line(file, *line);
 		if (!*line)
 			return (gnl_update_file(file, -1));
 		(void)gnl_update_file(file, 1);
