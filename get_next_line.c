@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 16:19:17 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 18:09:48 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	gnl_fill_buffer(t_file *file)
 	if (file->state < 0)
 		return (-1);
 	if (file->state == 0
-		|| (file->start >= 0 && file->start < file->end))
+		|| (file->start >= 0 && file->start <= file->end))
 	{
 		ft_next_stop(file);
 		return (file->state);
