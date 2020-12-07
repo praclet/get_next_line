@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 15:45:10 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 16:19:17 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,26 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-static char	*gnl_concat(char *s1, char *s2, size_t len2)
+static void	ft_next_stop(t_file *file)
 {
-	char	*res;
-	char	*tmp;
-	char	*tmp_s1;
+	size_t	i;
+	char	*cur;
+	size_t	n;
 
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s2)
-		return (s1);
-	if (!(res = (char *)malloc((ft_strlen(s1) + len2 + 1) * sizeof(char))))
+	cur = file->buffer + file->start;
+	n = BUFFER_SIZE - file->start;
+	i = 0;
+	while (i < n)
 	{
-		free(s1);
-		return (NULL);
+		if (*cur == '\n')
+		{
+			file->pos = i;
+			return ;
+		}
+		cur++;
+		i++;
 	}
-	tmp = res;
-	tmp_s1 = s1;
-	if (s1)
-		while (*s1)
-			*tmp++ = *s1++;
-	if (s1)
-		free(tmp_s1);
-	if (s2)
-		while (len2--)
-			*tmp++ = *s2++;
-	*tmp = 0;
-	return (res);
+	file->pos = -1;
 }
 
 static void	gnl_update_data_file(t_file *file, int start, int end, int pos)
@@ -67,7 +60,7 @@ static int	gnl_fill_buffer(t_file *file)
 		return (file->state);
 	}
 	if (file->state)
-		gnl_update_data_file(file, 0, file->state, file->pos);
+		gnl_update_data_file(file, 0, file->state - 1, file->pos);
 	file->state = !!file->state;
 	ft_next_stop(file);
 	return (file->state);

@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 15:45:49 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 15:54:53 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,28 +51,6 @@ t_file			*lst_get(t_list **list, int fd)
 	return (lst_add(list, fd));
 }
 
-void			ft_next_stop(t_file *file)
-{
-	size_t	i;
-	char	*cur;
-	size_t	n;
-
-	cur = file->buffer + file->start;
-	n = BUFFER_SIZE - file->start;
-	i = 0;
-	while (i < n)
-	{
-		if (*cur == '\n')
-		{
-			file->pos = i;
-			return ;
-		}
-		cur++;
-		i++;
-	}
-	file->pos = -1;
-}
-
 int				ft_strlen(const char *str)
 {
 	int res;
@@ -81,6 +59,35 @@ int				ft_strlen(const char *str)
 	if (str)
 		while (*str++)
 			res++;
+	return (res);
+}
+
+static char		*gnl_concat(char *s1, char *s2, size_t len2)
+{
+	char	*res;
+	char	*tmp;
+	char	*tmp_s1;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s2)
+		return (s1);
+	if (!(res = (char *)malloc((ft_strlen(s1) + len2 + 1) * sizeof(char))))
+	{
+		free(s1);
+		return (NULL);
+	}
+	tmp = res;
+	tmp_s1 = s1;
+	if (s1)
+		while (*s1)
+			*tmp++ = *s1++;
+	if (s1)
+		free(tmp_s1);
+	if (s2)
+		while (len2--)
+			*tmp++ = *s2++;
+	*tmp = 0;
 	return (res);
 }
 
