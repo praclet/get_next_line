@@ -6,14 +6,14 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/04 11:09:55 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 09:04:24 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "get_next_line.h"
 
-static t_file *lst_add(t_list **list, int fd)
+static t_file	*lst_add(t_list **list, int fd)
 {
 	t_list *res;
 	t_file *data;
@@ -37,7 +37,7 @@ static t_file *lst_add(t_list **list, int fd)
 	return ((t_file *)res->data);
 }
 
-t_file *lst_get(t_list **list, int fd)
+t_file			*lst_get(t_list **list, int fd)
 {
 	t_list *lst;
 
@@ -51,7 +51,7 @@ t_file *lst_get(t_list **list, int fd)
 	return (lst_add(list, fd));
 }
 
-void	ft_next_stop(t_file *file)
+void			ft_next_stop(t_file *file)
 {
 	size_t	i;
 	char	*cur;
@@ -60,7 +60,7 @@ void	ft_next_stop(t_file *file)
 	cur = file->buffer + file->start;
 	n = BUFFER_SIZE - file->start;
 	i = 0;
-	while (*cur && i < n)
+	while (i < n)
 	{
 		if (*cur == '\n')
 		{
@@ -70,9 +70,10 @@ void	ft_next_stop(t_file *file)
 		cur++;
 		i++;
 	}
+	file->pos = -1;
 }
 
-int		ft_strlen(const char *str)
+int				ft_strlen(const char *str)
 {
 	int res;
 
