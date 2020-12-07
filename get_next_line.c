@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 09:23:43 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/07 11:37:16 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	gnl_fill_buffer(t_file *file)
 	if (file->state < 0)
 		return (-1);
 	if (file->state == 0
-		|| (file->start >= 0 && file->start <= file->end))
+		|| (file->start >= 0 && file->start < file->end))
 	{
 		ft_next_stop(file);
 		return (file->state);
@@ -64,7 +64,7 @@ static int	gnl_fill_buffer(t_file *file)
 	if (file->state)
 	{
 		file->start = 0;
-		file->end = file->state;
+		file->end = file->state - 1;
 	}
 	file->state = !!file->state;
 	ft_next_stop(file);
@@ -88,6 +88,9 @@ static int	gnl_update_file(t_file *file, int rc)
 		}
 		else
 			file->start += file->pos + 1;
+		if (file->start > -1 && file->start < BUFFER_SIZE
+			&& file->start > file->end)
+			file->state = 0;
 	}
 	return (rc);
 }
@@ -96,12 +99,14 @@ int			get_next_line(int fd, char **line)
 {
 	static t_list	*dir;
 	t_file			*file;
+	int				tmp;
 
+	*line = NULL;
 	file = lst_get(&dir, fd);
 	if (!file)
 		return (-1);
-	if (gnl_fill_buffer(file) < 0)
-		return (gnl_update_file(file, -1));
+	if ((tmp = gnl_fill_buffer(file)) <= 0)
+		return (gnl_update_file(file, tmp));
 	*line = gnl_concat(NULL, file->buffer + file->start,
 		(file->pos < 0 ? file->end - file->start + 1 : file->pos));
 	if (!*line)
