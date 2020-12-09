@@ -6,12 +6,12 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 22:21:11 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/07 15:52:41 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 15:44:48 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 typedef struct		s_file
 {
