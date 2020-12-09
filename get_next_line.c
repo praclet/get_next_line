@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/09 13:45:35 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 15:26:17 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 static void	ft_next_stop(t_file *file)
 {
 	char	*cur;
+	char	*min;
+	char	*max;
 
 	if (file->start < 0 || file->end < 0
 		|| file->start >= BUFFER_SIZE || file->end >= BUFFER_SIZE)
@@ -25,11 +27,13 @@ static void	ft_next_stop(t_file *file)
 		return ;
 	}
 	cur = file->buffer + file->start;
-	while (cur <= cur + file->end)
+	min = cur;
+	max = file->buffer + file->end;
+	while (cur <= max)
 	{
 		if (*cur == '\n')
 		{
-			file->pos = cur - (file->buffer + file->start);
+			file->pos = cur - min;
 			return ;
 		}
 		cur++;
