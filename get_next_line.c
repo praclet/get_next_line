@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/08 15:38:40 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 13:45:35 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,23 @@
 
 static void	ft_next_stop(t_file *file)
 {
-	size_t	i;
 	char	*cur;
-	size_t	n;
 
-	if (file->start < 0 || file->end < 0 || file->start >= BUFFER_SIZE)
+	if (file->start < 0 || file->end < 0
+		|| file->start >= BUFFER_SIZE || file->end >= BUFFER_SIZE)
 	{
 		file->pos = -1;
 		return ;
 	}
 	cur = file->buffer + file->start;
-	n = file->end;
-	i = 0;
-	while (i <= n)
+	while (cur <= cur + file->end)
 	{
 		if (*cur == '\n')
 		{
-			file->pos = i;
+			file->pos = cur - (file->buffer + file->start);
 			return ;
 		}
 		cur++;
-		i++;
 	}
 	file->pos = -1;
 }
@@ -73,18 +69,10 @@ static int	gnl_fill_buffer(t_file *file)
 
 static int	gnl_update_file(t_file *file, int rc)
 {
-	if (file->state < 0)
+	if (file->state < 0 || file->pos < 0)
 		gnl_update_data_file(file, -1, -1, -1);
 	else
-	{
-		if (file->pos < 0)
-			gnl_update_data_file(file, -1, -1, -1);
-		else
-			file->start += file->pos + 1;
-		if (file->start > -1 && file->start < BUFFER_SIZE
-			&& file->start > file->end)
-			file->state = 0;
-	}
+		file->start += file->pos + 1;
 	return (rc);
 }
 

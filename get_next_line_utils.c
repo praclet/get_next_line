@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/08 08:28:22 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/09 13:53:55 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static char		*gnl_concat(char *s1, char *s2, size_t len2)
 char			*gnl_new_line(t_file *file, char *s1)
 {
 	if (file->start > file->end || (file->state == 0 && file->start == -1))
-		return (gnl_concat(s1, file->buffer, 0));
+		return (s1);
 	return (gnl_concat(s1, file->buffer + file->start,
 			file->pos < 0 ? file->end - file->start + 1 : file->pos));
 }
