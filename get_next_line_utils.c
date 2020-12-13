@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/09 15:13:41 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 09:59:01 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,31 @@ t_file			*lst_get(t_list **list, int fd)
 	return (lst_add(list, fd));
 }
 
+void			lst_remove(t_list **list, t_file **file)
+{
+	t_list *prev;
+	t_list *cur;
+
+	prev = NULL;
+	cur = *list;
+	while (cur)
+	{
+		if (cur->data == *file)
+		{
+			if (prev)
+				prev->next = cur->next;
+			else
+				*list = cur->next;
+			free(cur->data);
+			free(cur);
+			*file = NULL;
+			break;
+		}
+		prev = cur;
+		cur = cur->next;
+	}
+}
+
 int				ft_strlen(const char *str)
 {
 	int res;
@@ -62,7 +87,7 @@ int				ft_strlen(const char *str)
 	return (res);
 }
 
-static char		*gnl_concat(char *s1, char *s2, size_t len2)
+char			*gnl_concat(char *s1, char *s2, size_t len2)
 {
 	char	*res;
 	char	*tmp;
@@ -89,12 +114,4 @@ static char		*gnl_concat(char *s1, char *s2, size_t len2)
 			*tmp++ = *s2++;
 	*tmp = 0;
 	return (res);
-}
-
-char			*gnl_new_line(t_file *file, char *s1)
-{
-	if (file->start > file->end || (file->state == 0 && file->start == -1))
-		return (gnl_concat(s1, "", 0));
-	return (gnl_concat(s1, file->buffer + file->start,
-			file->pos < 0 ? file->end - file->start + 1 : file->pos));
 }
