@@ -6,13 +6,13 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/01 09:14:07 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/13 09:58:31 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 16:58:31 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*gnl_new_line(t_file *file, char *s1)
 {

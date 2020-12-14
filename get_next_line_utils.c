@@ -6,7 +6,7 @@
 /*   By: praclet <praclet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 04:19:28 by praclet           #+#    #+#             */
-/*   Updated: 2020/12/13 09:59:01 by praclet          ###   ########lyon.fr   */
+/*   Updated: 2020/12/13 16:59:38 by praclet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void			lst_remove(t_list **list, t_file **file)
 			free(cur->data);
 			free(cur);
 			*file = NULL;
-			break;
+			break ;
 		}
 		prev = cur;
 		cur = cur->next;
